@@ -23,14 +23,15 @@ setInterval(() => {
     }
 }, world.mutationInterval);
 setInterval(() => {
-    if (world.foods.length >= 3000)
+    if (world.getWorldFoodsCount() >= 3000)
         return;
     for (let i = 0; i < world.foodDensity; i++) {
-        let x = Math.floor(Math.random() * (canvas.width - 10 + 1) + 10);
-        let y = Math.floor(Math.random() * (canvas.height - 10 + 1) + 10);
+        let x = Math.floor((Math.random() * (canvas.width - 40 + 1)) + 10);
+        let y = Math.floor((Math.random() * (canvas.height - 40 + 1)) + 10);
         const food = new Food(x, y);
         if (!food.collideToObstacles(world.obstacles))
-            world.foods.push(food);
+            world.putFoodInTheFoodMatrix(food);
+            // world.foods.push(food);
     }
 }, world.foodGenerationInterval);
 

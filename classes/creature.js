@@ -113,8 +113,7 @@ class Creature {
         else
             this.targetedMove();
 
-        if(this.collideToObstacles() || this.collideToWorldBounds())
-        {
+        if (this.collideToObstacles() || this.collideToWorldBounds()) {
             this.x = this.lastPosition.x;
             this.y = this.lastPosition.y;
             this.randomTargetMove = null;
@@ -155,8 +154,7 @@ class Creature {
 
         if (moveDirection === 0) {
             this.randomMove();
-        }
-        else {
+        } else {
             this.randomTargetMove = null;
             this.move(moveDirection);
         }
@@ -205,7 +203,11 @@ class Creature {
         let minDistance = 1000;
         let food = null;
 
-        this.world.foods.forEach(f => {
+        let foods = this.world.getFoodSectionsCollideTo(
+            {x: this.x - this.world.eyeRadius, y: this.y - this.world.eyeRadius,
+                w: this.world.eyeRadius*2, h: this.world.eyeRadius*2}, true);
+
+        foods.forEach(f => {
             const distance = Math.sqrt(Math.pow(f.x - this.x, 2) + Math.pow(f.y - this.y, 2));
             if (distance <= this.world.eyeRadius) {
                 if (distance < minDistance) {
@@ -282,12 +284,7 @@ class Creature {
     }
 
     collideToWorldBounds() {
-        // if (this.x <= 0) this.x += this.world.creatureMoveStep;
-        // else if (this.x >= this.world.width) this.x -= this.world.creatureMoveStep;
-        // else if (this.y <= 0) this.y += this.world.creatureMoveStep;
-        // else if (this.y >= this.world.height) this.y -= world.creatureMoveStep;
-        return this.x <= 0 || this.x >= this.world.width || this.y <= 0 || this.y >= this.world.height;
-
+        return this.x <= 0 || this.x >= this.world.canvas.width || this.y <= 0 || this.y >= this.world.canvas.height;
     }
 
     lookingForFood() {
@@ -295,10 +292,13 @@ class Creature {
             this.targetFood.y > this.y - 15 && this.targetFood.y < this.y + this.world.creatureSize)
             this.targetFood = null;
 
-        this.world.foods.forEach((food, index) => {
-            if (food.x > this.x - 15 && food.x < this.x + 15 &&
-                food.y > this.y - 15 && food.y < this.y + 15)
-                this.eat(index);
+        let foodSections = this.world.getFoodSectionsCollideTo({x: this.x - 15, y: this.y - 15, w: 30, h: 30});
+        foodSections.forEach(foods => {
+            foods.forEach((food, index) => {
+                if (food.x > this.x - 15 && food.x < this.x + 15 &&
+                    food.y > this.y - 15 && food.y < this.y + 15)
+                    this.eat(index, foods);
+            });
         });
     }
 
@@ -308,8 +308,8 @@ class Creature {
             this.reproduction();
     }
 
-    eat(foodIndex) {
-        this.world.foods.splice(foodIndex, 1);
+    eat(foodIndex, foodSection) {
+        foodSection.splice(foodIndex, 1);
         this.energy += 2;
     }
 
@@ -343,7 +343,7 @@ class Creature {
             this.world.creatures.splice(index, 1);
             return;
         }
-        if(Math.abs(this.birthDate - new Date()) >= this.age) {
+        if (Math.abs(this.birthDate - new Date()) >= this.age) {
             this.world.creatures.splice(index, 1);
         }
     }
@@ -356,8 +356,8 @@ class Creature {
     collideToObstacles() {
         let collide = false;
         this.world.obstacles.forEach(o => {
-            if (this.x+15 > o.x && this.x-15 < o.x + o.w &&
-                this.y+15 > o.y && this.y-15 < o.y + o.h) {
+            if (this.x + 15 > o.x && this.x - 15 < o.x + o.w &&
+                this.y + 15 > o.y && this.y - 15 < o.y + o.h) {
                 collide = true;
             }
         });
