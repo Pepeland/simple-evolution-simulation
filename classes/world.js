@@ -4,18 +4,19 @@ class World {
         this.startDateTime = new Date();
         this.monitoringCreature = null;
 
-        this.foodDensity = 200;
+        this.foodDensity = 500;
         this.foodGenerationInterval = 4000;
 
         this.mutationDensity = 2;
         this.mutationInterval = 6000;
 
-        this.creaturesStartCount = 200;
+        this.creaturesStartCount = 100;
 
-        this.creatures = [];
+        this.maleCreatures = [];
+        this.femaleCreatures = [];
         this.foods = [];
         this.foodMatrix = [];
-        this.foodMatrixSize = [10, 10];
+        this.foodMatrixSize = [4, 4];
         this.foodMatrixRects = [];
         this.obstacles = obstacles;
 
@@ -75,8 +76,17 @@ class World {
     }
 
     drawCreatures(c) {
-        this.creatures.forEach((creature, index) => creature.update(c, index));
+        this.drawMales(c);
+        this.drawFemales(c);
     }
+
+    async drawMales(c) {
+        this.maleCreatures.forEach((creature, index) => creature.update(c, index));
+    }
+    async drawFemales(c) {
+        this.femaleCreatures.forEach((creature, index) => creature.update(c, index));
+    }
+
 
     drawFps(c) {
         const now = performance.now();
@@ -90,7 +100,7 @@ class World {
         c.font = "15px Arial Black";
         c.fillText(`FPS: ${this.fps}`, this.canvas.width - 107, 20);
         c.fillText(`foods: ${this.getWorldFoodsCount()}`, this.canvas.width - 120, 50);
-        c.fillText(`creatures: ${this.creatures.length}`, this.canvas.width - 155, 80);
+        c.fillText(`creatures: ${this.maleCreatures.length + this.femaleCreatures.length}`, this.canvas.width - 155, 80);
     }
 
     createFoodMatrix() {

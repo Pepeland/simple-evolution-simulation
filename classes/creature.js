@@ -5,7 +5,7 @@ class Creature {
         this.world = world;
         this.shape = this.generateRandomShape();
         this.color = this.generateRandomColor();
-        this.eye = false;
+        this.eye = true;
         this.flagella = false;
         this.gender = Math.random() > 0.5 ? 'male' : 'female';
         this.energy = 100;
@@ -224,9 +224,8 @@ class Creature {
         let minDistanceMate = 1000;
         let mate = null;
 
-        this.world.creatures.forEach(creature => {
-            if (this.shape !== creature.shape || this.gender === creature.gender ||
-                !creature.getReproductionCoolDown() || creature.energy < 10)
+        this.world.femaleCreatures.forEach(creature => {
+            if (this.shape !== creature.shape || !creature.getReproductionCoolDown() || creature.energy < 10)
                 return;
             const distance = Math.sqrt(Math.pow(creature.x - this.x, 2) + Math.pow(creature.y - this.y, 2));
             if (distance <= this.world.eyeRadius) {
@@ -321,7 +320,10 @@ class Creature {
         newCreature.eye = Math.random() > 0.5 ? this.eye : this.targetMate.eye;
         newCreature.flagella = Math.random() > 0.5 ? this.flagella : this.targetMate.flagella;
 
-        this.world.creatures.push(newCreature);
+        if(newCreature.gender === 'male')
+            this.world.maleCreatures.push(newCreature);
+        else
+            this.world.femaleCreatures.push(newCreature);
 
         this.reproductionLastTime = new Date();
         this.targetMate.reproductionLastTime = new Date();
@@ -340,11 +342,17 @@ class Creature {
 
     checkingForDeath(index) {
         if (this.energy <= 0) {
-            this.world.creatures.splice(index, 1);
+            if(this.gender === 'male')
+                this.world.maleCreatures.splice(index, 1);
+            else
+                this.world.femaleCreatures.splice(index, 1);
             return;
         }
         if (Math.abs(this.birthDate - new Date()) >= this.age) {
-            this.world.creatures.splice(index, 1);
+            if(this.gender === 'male')
+                this.world.maleCreatures.splice(index, 1);
+            else
+                this.world.femaleCreatures.splice(index, 1);
         }
     }
 

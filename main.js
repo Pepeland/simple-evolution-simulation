@@ -3,7 +3,9 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 const world = new World(canvas, createObstacles());
-world.creatures = createCreatures();
+const creatures = createCreatures();
+world.maleCreatures = creatures.males;
+world.femaleCreatures = creatures.females;
 
 function animation() {
     requestAnimationFrame(animation);
@@ -11,9 +13,10 @@ function animation() {
 }
 
 setInterval(() => {
-    if (world.creatures.length === 0) return;
+    if (world.maleCreatures.length + world.femaleCreatures.length === 0) return;
     for (let i = 0; i < world.mutationDensity; i++) {
-        const creature = world.creatures[Math.floor(Math.random() * world.creatures.length)]
+        const creature = Math.random() > 0.5 ? world.maleCreatures[Math.floor(Math.random() * world.maleCreatures.length)] :
+            world.femaleCreatures[Math.floor(Math.random() * world.femaleCreatures.length)];
         if (!creature) return;
         if (Math.random() > 0.5) {
             creature.eye = true;
@@ -41,12 +44,18 @@ function createObstacles() {
 }
 
 function createCreatures() {
-    const creatures = [];
-    while (creatures.length !== world.creaturesStartCount) {
+    const males = [];
+    const females = [];
+    while (males.length + females.length !== world.creaturesStartCount) {
         const c = createCreature();
-        if(c) creatures.push(c);
+        if(c) {
+            if(c.gender === 'male')
+                males.push(c);
+            else
+                females.push(c);
+        }
     }
-    return creatures;
+    return {males, females};
 }
 
 function createCreature() {
