@@ -5,12 +5,31 @@
     <title>Simple Evolution Simulation</title>
     <style>
         body {
-            margin: 0;
+              margin: 0;
+        }
+        #hud {
+            display: grid;
+            grid-row-gap: 5px;
+            grid-column-gap: 5px;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            grid-template-columns: 90px 50px;
+            background-color: rgba(65,105,225, 0.5);
+            color: whitesmoke;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Open Sans SemiBold", sans-serif;
         }
     </style>
 </head>
 <body>
 <canvas></canvas>
+<div id="hud">
+    <div>FPS:</div><div id="hud-fps">60</div>
+    <div>Foods:</div><div id="hud-foods">2000</div>
+    <div>Creatures:</div><div id="hud-creatures">150</div>
+</div>
 <script src="classes/creature.js"></script>
 <script src="classes/food.js"></script>
 <script src="classes/world.js"></script>

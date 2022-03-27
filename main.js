@@ -1,8 +1,13 @@
 const canvas = document.querySelector('canvas');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
+const hud = {
+    fps: document.getElementById("hud-fps"),
+    foods: document.getElementById("hud-foods"),
+    creatures: document.getElementById("hud-creatures")
+}
 
-const world = new World(canvas, createObstacles());
+const world = new World(canvas, createObstacles(), hud);
 const creatures = createCreatures();
 world.maleCreatures = creatures.males;
 world.femaleCreatures = creatures.females;
@@ -34,13 +39,12 @@ setInterval(() => {
         const food = new Food(x, y);
         if (!food.collideToObstacles(world.obstacles))
             world.putFoodInTheFoodMatrix(food);
-            // world.foods.push(food);
     }
 }, world.foodGenerationInterval);
 
 function createObstacles() {
-    return [{x: 300, y: 300, w: 50, h: 500},
-        {x: 900, y: 0, w: 50, h: canvas.height}]
+    return [{x: 0, y: 400, w: 500, h: 50},
+        {x: 900, y: 0, w: 50, h: canvas.height - 120}]
 }
 
 function createCreatures() {

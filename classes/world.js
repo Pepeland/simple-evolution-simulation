@@ -1,10 +1,10 @@
 class World {
-    constructor(canvas, obstacles) {
+    constructor(canvas, obstacles, hud) {
         this.canvas = canvas;
         this.startDateTime = new Date();
         this.monitoringCreature = null;
 
-        this.foodDensity = 500;
+        this.foodDensity = 200;
         this.foodGenerationInterval = 4000;
 
         this.mutationDensity = 2;
@@ -38,6 +38,8 @@ class World {
         this.maleImg.src = "images/male-16.png"
         this.femaleImg.src = "images/female-16.png"
 
+        this.hud = hud;
+
         this.createFoodMatrix();
     }
 
@@ -56,7 +58,7 @@ class World {
         this.drawFoods(c);
         this.drawObstacles(c);
         this.drawCreatures(c);
-        this.drawFps(c);
+        this.drawHud(c);
     }
 
     drawFoods(c) {
@@ -65,12 +67,13 @@ class World {
                 this.foodMatrix[x][y].forEach(food => food.draw(c));
             }
         }
-        // this.foods.forEach(food => food.draw(c));
     }
 
     drawObstacles(c) {
         this.obstacles.forEach(obstacle => {
-            c.fillStyle = 'rgba(51, 26, 0, 0.7)';
+            const img = document.createElement('img');
+            img.src = 'images/stone.png'
+            c.fillStyle = c.createPattern(img, "repeat");
             c.fillRect(obstacle.x, obstacle.y, obstacle.w, obstacle.h);
         });
     }
@@ -88,7 +91,7 @@ class World {
     }
 
 
-    drawFps(c) {
+    drawHud(c) {
         const now = performance.now();
         while (this.fpsTimes.length > 0 && this.fpsTimes[0] <= now - 1000) {
             this.fpsTimes.shift();
@@ -96,11 +99,9 @@ class World {
         this.fpsTimes.push(now);
         this.fps = this.fpsTimes.length;
 
-        c.fillStyle = 'white';
-        c.font = "15px Arial Black";
-        c.fillText(`FPS: ${this.fps}`, this.canvas.width - 107, 20);
-        c.fillText(`foods: ${this.getWorldFoodsCount()}`, this.canvas.width - 120, 50);
-        c.fillText(`creatures: ${this.maleCreatures.length + this.femaleCreatures.length}`, this.canvas.width - 155, 80);
+        this.hud.fps.innerText = this.fps;
+        this.hud.foods.innerText = this.getWorldFoodsCount() + '';
+        this.hud.creatures.innerText = (this.maleCreatures.length + this.femaleCreatures.length) + '';
     }
 
     createFoodMatrix() {

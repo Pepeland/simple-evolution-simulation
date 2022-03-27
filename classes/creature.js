@@ -5,7 +5,7 @@ class Creature {
         this.world = world;
         this.shape = this.generateRandomShape();
         this.color = this.generateRandomColor();
-        this.eye = true;
+        this.eye = false;
         this.flagella = false;
         this.gender = Math.random() > 0.5 ? 'male' : 'female';
         this.energy = 100;
