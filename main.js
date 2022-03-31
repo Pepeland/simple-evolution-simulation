@@ -17,7 +17,7 @@ function animation() {
     world.draw();
 }
 
-setInterval(() => {
+setTimeout(() => {
     if (world.maleCreatures.length + world.femaleCreatures.length === 0) return;
     for (let i = 0; i < world.mutationDensity; i++) {
         const creature = Math.random() > 0.5 ? world.maleCreatures[Math.floor(Math.random() * world.maleCreatures.length)] :

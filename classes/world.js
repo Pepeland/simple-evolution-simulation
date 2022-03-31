@@ -7,10 +7,10 @@ class World {
         this.foodDensity = 200;
         this.foodGenerationInterval = 4000;
 
-        this.mutationDensity = 2;
-        this.mutationInterval = 6000;
+        this.mutationDensity = 6;
+        this.mutationInterval = 5000;
 
-        this.creaturesStartCount = 100;
+        this.creaturesStartCount = 150;
 
         this.maleCreatures = [];
         this.femaleCreatures = [];

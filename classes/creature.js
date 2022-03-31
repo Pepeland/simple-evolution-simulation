@@ -204,8 +204,10 @@ class Creature {
         let food = null;
 
         let foods = this.world.getFoodSectionsCollideTo(
-            {x: this.x - this.world.eyeRadius, y: this.y - this.world.eyeRadius,
-                w: this.world.eyeRadius*2, h: this.world.eyeRadius*2}, true);
+            {
+                x: this.x - this.world.eyeRadius, y: this.y - this.world.eyeRadius,
+                w: this.world.eyeRadius * 2, h: this.world.eyeRadius * 2
+            }, true);
 
         foods.forEach(f => {
             const distance = Math.sqrt(Math.pow(f.x - this.x, 2) + Math.pow(f.y - this.y, 2));
@@ -305,6 +307,13 @@ class Creature {
         if (this.targetMate && this.targetMate.x - 15 < this.x + 15 && this.targetMate.x + 15 > this.x - 15 &&
             this.targetMate.y - 15 < this.y + 15 && this.targetMate.y + 15 > this.y - 15)
             this.reproduction();
+        else {
+            this.world.femaleCreatures.forEach(female => {
+                if (female.x - 15 < this.x + 15 && female.x + 15 > this.x - 15 &&
+                    female.y - 15 < this.y + 15 && female.y + 15 > this.y - 15)
+                    this.reproduction(female);
+            })
+        }
     }
 
     eat(foodIndex, foodSection) {
@@ -312,23 +321,29 @@ class Creature {
         this.energy += 2;
     }
 
-    reproduction() {
+    reproduction(female) {
+        const targetMate = female ? female : this.targetMate;
         let newCreature = new Creature(this.x, this.y, this.world);
         newCreature.shape = this.shape;
-        newCreature.color = this.generateNewbornColor(this, this.targetMate);
+        newCreature.color = this.generateNewbornColor(this, targetMate);
         newCreature.energy = 40;
-        newCreature.eye = Math.random() > 0.5 ? this.eye : this.targetMate.eye;
-        newCreature.flagella = Math.random() > 0.5 ? this.flagella : this.targetMate.flagella;
+        newCreature.eye = Math.random() > 0.5 ? this.eye : targetMate.eye;
+        newCreature.flagella = Math.random() > 0.5 ? this.flagella : targetMate.flagella;
 
-        if(newCreature.gender === 'male')
+        if (!newCreature.eye)
+            newCreature.eye = Math.random() > 0.8;
+        if (!newCreature.flagella)
+            newCreature.flagella = Math.random() > 0.8;
+
+        if (newCreature.gender === 'male')
             this.world.maleCreatures.push(newCreature);
         else
             this.world.femaleCreatures.push(newCreature);
 
         this.reproductionLastTime = new Date();
-        this.targetMate.reproductionLastTime = new Date();
+        targetMate.reproductionLastTime = new Date();
         this.energy -= 10;
-        this.targetMate.energy -= 10;
+        targetMate.energy -= 10;
         this.targetMate = null;
     }
 
@@ -342,14 +357,14 @@ class Creature {
 
     checkingForDeath(index) {
         if (this.energy <= 0) {
-            if(this.gender === 'male')
+            if (this.gender === 'male')
                 this.world.maleCreatures.splice(index, 1);
             else
                 this.world.femaleCreatures.splice(index, 1);
             return;
         }
         if (Math.abs(this.birthDate - new Date()) >= this.age) {
-            if(this.gender === 'male')
+            if (this.gender === 'male')
                 this.world.maleCreatures.splice(index, 1);
             else
                 this.world.femaleCreatures.splice(index, 1);
