@@ -21,7 +21,7 @@ function animation() {
 
 function startFoodGenerationInterval() {
     foodInterval = setInterval(() => {
-        if (world.getWorldFoodsCount() >= 3000)
+        if (world.getWorldFoodsCount() >= world.maxFood)
             return;
         for (let i = 0; i < world.foodDensity; i++) {
             let x = Math.floor((Math.random() * (canvas.width - 40 + 1)) + 10);
@@ -57,6 +57,42 @@ function createCreature() {
     return creature.collideToObstacles() ? null : creature;
 }
 
+let settingsPanelShow = false;
+function openSettingsPanel() {
+    document.getElementById('open-settings-btn').style.display = 'none';
+    let l = -340;
+    let wi = setInterval(()=> {
+        let settingsPanel = document.getElementById('settings');
+        if(settingsPanel.style.left === '0px') {
+            clearInterval(wi);
+            settingsPanelShow = true;
+            return;
+        }
+        l += 5;
+        settingsPanel.style.left = l + 'px';
+    }, 0);
+}
+function closeSettingsPanel() {
+    settingsPanelShow = false;
+    //window.removeEventListener("click", ()=>{});
+    let l = 0;
+    let wi = setInterval(()=> {
+        let settingsPanel = document.getElementById('settings');
+        if(settingsPanel.style.left === '-340px') {
+            clearInterval(wi);
+            document.getElementById('open-settings-btn').style.display = 'inline-block';
+            return;
+        }
+        l -= 5;
+        settingsPanel.style.left = l + 'px';
+    }, 0);
+}
+window.addEventListener('click', function(e){
+    if(settingsPanelShow)
+        if (!document.getElementById('settings').contains(e.target))
+            closeSettingsPanel();
+});
+
 function stop() {
     worldStatus = 'stop';
 
@@ -68,11 +104,21 @@ function stop() {
 
     cancelAnimationFrame(animationRequestID);
 }
-
 function start() {
     if(worldStatus === 'stop') {
         worldStatus = 'play';
-        world = new World(canvas, obstacles, hud);
+
+        if(!world) {
+            world = new World(canvas, obstacles, hud);
+        } else {
+            const uiParams = readUiSettings();
+            world = new World(canvas, uiParams.obstacles, hud);
+            world.creaturesStartCount = uiParams.creaturesStartCount;
+            world.foodDensity = uiParams.foodDensity;
+            world.foodGenerationInterval = uiParams.foodGenerationInterval;
+            world.mutationDensity = uiParams.mutationDensity;
+        }
+
         const creatures = createCreatures()
         world.maleCreatures = creatures.males;
         world.femaleCreatures = creatures.females;
@@ -85,7 +131,6 @@ function start() {
         animation();
     }
 }
-
 function pause() {
     worldStatus = 'pause';
     stopFoodGenerationInterval();
@@ -93,3 +138,38 @@ function pause() {
 }
 
 start();
+
+(function setUiValues() {
+    document.getElementById('creatures-count').value = world.creaturesStartCount;
+    document.getElementById('food-density').value = world.foodDensity;
+    document.getElementById('food-generation-interval').value = world.foodGenerationInterval;
+    document.getElementById('mutation-density').value = world.mutationDensity;
+
+    const obstaclesInput = document.getElementById('obstacles');
+    world.obstacles.forEach(o => {
+        obstaclesInput.value += `${o.x},${o.y},${o.w},${o.h}\n`
+    });
+}());
+function readUiSettings() {
+    const creaturesStartCount = +document.getElementById('creatures-count').value;
+    const foodDensity = +document.getElementById('food-density').value;
+    const foodGenerationInterval = +document.getElementById('food-generation-interval').value;
+    const mutationDensity = +document.getElementById('mutation-density').value;
+    const obstaclesInputValue = document.getElementById('obstacles').value;
+
+    const obstacles = [];
+    let oLines = obstaclesInputValue.split(/\r?\n/);
+    oLines.forEach(l=> {
+        if(!l || l === ' ') return;
+        const oValues = l.split(',');
+        obstacles.push({x: +oValues[0], y: +oValues[1], w: +oValues[2], h: +oValues[3]})
+    });
+
+    return {
+        creaturesStartCount,
+        foodDensity,
+        foodGenerationInterval,
+        mutationDensity,
+        obstacles
+    }
+}

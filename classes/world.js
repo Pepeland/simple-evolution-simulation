@@ -6,18 +6,18 @@ class World {
 
         this.foodDensity = 200;
         this.foodGenerationInterval = 4000;
+        this.maxFood = 3000;
+        this.foods = [];
+        this.foodMatrix = [];
+        this.foodMatrixSize = [4, 4];
+        this.foodMatrixRects = [];
 
-        this.mutationDensity = 6;
-        this.mutationInterval = 5000;
+        this.mutationDensity = 10;
 
         this.creaturesStartCount = 150;
 
         this.maleCreatures = [];
         this.femaleCreatures = [];
-        this.foods = [];
-        this.foodMatrix = [];
-        this.foodMatrixSize = [4, 4];
-        this.foodMatrixRects = [];
         this.obstacles = obstacles;
 
         this.creatureMoveStep = 1;

@@ -331,9 +331,9 @@ class Creature {
         newCreature.flagella = Math.random() > 0.5 ? this.flagella : targetMate.flagella;
 
         if (!newCreature.eye)
-            newCreature.eye = Math.random() > 0.8;
+            newCreature.eye = Math.random() < this.world.mutationDensity / 100;
         if (!newCreature.flagella)
-            newCreature.flagella = Math.random() > 0.8;
+            newCreature.flagella = Math.random() < this.world.mutationDensity / 100;
 
         if (newCreature.gender === 'male')
             this.world.maleCreatures.push(newCreature);

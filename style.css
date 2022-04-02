@@ -16,10 +16,26 @@ body {
     font-family: "Open Sans SemiBold", sans-serif;
 }
 
+#open-settings-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(65,105,225, 0.5);
+    color: whitesmoke;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: "Open Sans SemiBold", sans-serif;
+    cursor: pointer;
+}
+
+#open-settings-btn:hover {
+    background-color: rgba(65,105,225, 0.7);
+}
+
 #settings {
     position: fixed;
     top: 0;
-    left: 0;
+    left: -340px;
     bottom: 0;
     width: 300px;
     //background-color: rgba(65,105,225, 0.5);
@@ -28,9 +44,10 @@ body {
     color: whitesmoke;
     font-size: 12pt;
     font-family: "Open Sans SemiBold", sans-serif;
+    overflow-y: auto;
 }
 
-#settings input {
+#settings input,textarea {
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.8);
     color: whitesmoke;
@@ -41,7 +58,11 @@ body {
     padding: 5px 10px;
 }
 #settings input:focus {
-    //border: 1px solid rgb(65,105,225);
+    outline: none !important;
+    border:2px solid rgb(65,105,225);
+    box-shadow: 0 0 10px black;
+}
+#settings textarea:focus {
     outline: none !important;
     border:2px solid rgb(65,105,225);
     box-shadow: 0 0 10px black;
@@ -53,9 +74,10 @@ body {
 
 #settings .btn {
     display: inline-block;
-    border: 3px solid black;
+    border: 5px solid black;
     border-radius: 10px;
-    padding: 10px;
+    padding: 7px;
+    padding-bottom: 4px;
     width: 50px;
     text-align: center;
     margin: 5px;

@@ -15,27 +15,29 @@
     <div>Creatures:</div>
     <div id="hud-creatures">150</div>
 </div>
+<div id="open-settings-btn" onclick="openSettingsPanel()">Settings</div>
 <div id="settings">
     <div>
         <label for="creatures-count">Creatures start count</label>
-        <input type="text" id="creatures-count">
+        <input type="number" id="creatures-count">
     </div>
     <div>
-        <label for="mutation-density">Mutation density</label>
-        <input type="text" id="mutation-density">
+        <label for="mutation-density">Chance of mutation in every reproduction <small>(percent: 1-100)</small></label>
+        <input type="number" id="mutation-density">
     </div>
     <hr>
     <div>
         <label for="food-density">Food density <small>(per each spawn)</small></label>
-        <input type="text" id="food-density">
+        <input type="number" id="food-density">
     </div>
     <div>
         <label for="food-generation-interval">Food generation interval <small>(milliseconds)</small></label>
-        <input type="text" id="food-generation-interval">
+        <input type="number" id="food-generation-interval">
     </div>
     <hr>
-
-
+        <label for="obstacles">Obstacles <small>rectangle shape, each line one obstacle (x,y,width,height)</small></label>
+        <textarea name="obstacles" id="obstacles" cols="25" rows="5"></textarea>
+    <hr>
     <div style="display: flex; width: 100%; margin-top: 10px; align-content: center">
         <div class="btn" onclick="pause()">
             <svg style="width: 24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -53,7 +55,6 @@
             </svg>
         </div>
     </div>
-
 
 </div>
 <script src="classes/creature.js"></script>
