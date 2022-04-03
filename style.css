@@ -9,7 +9,7 @@ body {
     top: 10px;
     right: 10px;
     grid-template-columns: 90px 50px;
-    background-color: rgba(65,105,225, 0.5);
+    background-color: rgba(65,105,225, 0.6);
     color: whitesmoke;
     padding: 15px;
     border-radius: 5px;
@@ -20,7 +20,7 @@ body {
     position: fixed;
     top: 10px;
     left: 10px;
-    background-color: rgba(65,105,225, 0.5);
+    background-color: rgba(65,105,225, 0.6);
     color: whitesmoke;
     padding: 15px;
     border-radius: 5px;
@@ -37,10 +37,11 @@ body {
     top: 0;
     left: -340px;
     bottom: 0;
-    width: 300px;
+    width: 275px;
     //background-color: rgba(65,105,225, 0.5);
-    background-image: linear-gradient(to right, rgba(65,105,225, 0.9), rgba(65,105,225, 0.8), rgba(65,105,225, 0.7));
+    background-image: linear-gradient(to right, rgba(65,105,225, 1), rgba(65,105,225, 0.9), rgba(65,105,225, 0.8));
     padding: 20px;
+    padding-right: 45px;
     color: whitesmoke;
     font-size: 12pt;
     font-family: "Open Sans SemiBold", sans-serif;
@@ -56,6 +57,7 @@ body {
     font-family: "Open Sans SemiBold", sans-serif;
     margin-top: 5px;
     padding: 5px 10px;
+    width: 100%;
 }
 #settings input:focus {
     outline: none !important;
@@ -74,7 +76,7 @@ body {
 
 #settings .btn {
     display: inline-block;
-    border: 5px solid black;
+    border: 1px solid rgb(29, 53, 121);
     border-radius: 10px;
     padding: 7px;
     padding-bottom: 4px;
@@ -82,6 +84,13 @@ body {
     text-align: center;
     margin: 5px;
     cursor: pointer;
+    background-color: rgb(29, 53, 121);
+    color: whitesmoke;
+}
+
+#settings .btn:hover {
+    background-color: rgb(39, 67, 146);
+    border: 1px solid whitesmoke;
 }
 
 #settings hr {

@@ -24,6 +24,8 @@ function startFoodGenerationInterval() {
         if (world.getWorldFoodsCount() >= world.maxFood)
             return;
         for (let i = 0; i < world.foodDensity; i++) {
+            if(world.getWorldFoodsCount() >= world.maxFood)
+                break;
             let x = Math.floor((Math.random() * (canvas.width - 40 + 1)) + 10);
             let y = Math.floor((Math.random() * (canvas.height - 40 + 1)) + 10);
             const food = new Food(x, y);
@@ -116,6 +118,7 @@ function start() {
             world.creaturesStartCount = uiParams.creaturesStartCount;
             world.foodDensity = uiParams.foodDensity;
             world.foodGenerationInterval = uiParams.foodGenerationInterval;
+            world.maxFood = uiParams.maxFood;
             world.mutationDensity = uiParams.mutationDensity;
         }
 
@@ -143,17 +146,17 @@ start();
     document.getElementById('creatures-count').value = world.creaturesStartCount;
     document.getElementById('food-density').value = world.foodDensity;
     document.getElementById('food-generation-interval').value = world.foodGenerationInterval;
+    document.getElementById('max-food').value = world.maxFood;
     document.getElementById('mutation-density').value = world.mutationDensity;
 
     const obstaclesInput = document.getElementById('obstacles');
-    world.obstacles.forEach(o => {
-        obstaclesInput.value += `${o.x},${o.y},${o.w},${o.h}\n`
-    });
+    world.obstacles.forEach(o => obstaclesInput.value += `${o.x},${o.y},${o.w},${o.h}\n`);
 }());
 function readUiSettings() {
     const creaturesStartCount = +document.getElementById('creatures-count').value;
     const foodDensity = +document.getElementById('food-density').value;
     const foodGenerationInterval = +document.getElementById('food-generation-interval').value;
+    const maxFood = document.getElementById('max-food').value;
     const mutationDensity = +document.getElementById('mutation-density').value;
     const obstaclesInputValue = document.getElementById('obstacles').value;
 
@@ -169,6 +172,7 @@ function readUiSettings() {
         creaturesStartCount,
         foodDensity,
         foodGenerationInterval,
+        maxFood,
         mutationDensity,
         obstacles
     }
