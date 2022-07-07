@@ -30,7 +30,7 @@ function startFoodGenerationInterval() {
             let y = Math.floor((Math.random() * (canvas.height - 40 + 1)) + 10);
             const food = new Food(x, y);
             if (!food.collideToObstacles(world.obstacles))
-                world.putFoodInTheFoodMatrix(food);
+                world.addFood(food);
         }
     }, world.foodGenerationInterval);
 }

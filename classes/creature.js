@@ -203,18 +203,14 @@ class Creature {
         let minDistance = 1000;
         let food = null;
 
-        let foods = this.world.getFoodSectionsCollideTo(
-            {
-                x: this.x - this.world.eyeRadius, y: this.y - this.world.eyeRadius,
-                w: this.world.eyeRadius * 2, h: this.world.eyeRadius * 2
-            }, true);
+        const points = this.world.foodQuadtreeMap.query(new QT.Circle(this.x, this.y, this.world.eyeRadius));
 
-        foods.forEach(f => {
+        points.forEach(f => {
             const distance = Math.sqrt(Math.pow(f.x - this.x, 2) + Math.pow(f.y - this.y, 2));
             if (distance <= this.world.eyeRadius) {
                 if (distance < minDistance) {
                     minDistance = distance;
-                    food = f;
+                    food = f.food;
                 }
             }
         });
@@ -293,13 +289,13 @@ class Creature {
             this.targetFood.y > this.y - 15 && this.targetFood.y < this.y + this.world.creatureSize)
             this.targetFood = null;
 
-        let foodSections = this.world.getFoodSectionsCollideTo({x: this.x - 15, y: this.y - 15, w: 30, h: 30});
-        foodSections.forEach(foods => {
-            foods.forEach((food, index) => {
-                if (food.x > this.x - 15 && food.x < this.x + 15 &&
-                    food.y > this.y - 15 && food.y < this.y + 15)
-                    this.eat(index, foods);
-            });
+        const points = this.world.foodQuadtreeMap.query(new QT.Box(this.x - 15, this.y - 15, 30, 30));
+
+        points.forEach(point => {
+            const food = point.food;
+            if (food.x > this.x - 15 && food.x < this.x + 15 &&
+                food.y > this.y - 15 && food.y < this.y + 15)
+                this.eat(point);
         });
     }
 
@@ -316,8 +312,8 @@ class Creature {
         }
     }
 
-    eat(foodIndex, foodSection) {
-        foodSection.splice(foodIndex, 1);
+    eat(point) {
+        this.world.foodQuadtreeMap.remove(point);
         this.energy += 2;
     }
 

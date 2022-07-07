@@ -7,10 +7,7 @@ class World {
         this.foodDensity = 200;
         this.foodGenerationInterval = 4000;
         this.maxFood = 3000;
-        this.foods = [];
-        this.foodMatrix = [];
-        this.foodMatrixSize = [4, 4];
-        this.foodMatrixRects = [];
+        this.foodQuadtreeMap = new QT.QuadTree(new QT.Box(0, 0, canvas.width, canvas.height));
 
         this.mutationDensity = 10;
 
@@ -39,8 +36,6 @@ class World {
         this.femaleImg.src = "images/female-16.png"
 
         this.hud = hud;
-
-        this.createFoodMatrix();
     }
 
     getRandomPositionInTheWorld() {
@@ -62,11 +57,7 @@ class World {
     }
 
     drawFoods(c) {
-        for (let x = 0; x < this.foodMatrixSize[0]; x++) {
-            for (let y = 0; y < this.foodMatrixSize[1]; y++) {
-                this.foodMatrix[x][y].forEach(food => food.draw(c));
-            }
-        }
+        this.foodQuadtreeMap.getAllPoints().forEach(point => point.food.draw(c));
     }
 
     drawObstacles(c) {
@@ -104,56 +95,16 @@ class World {
         this.hud.creatures.innerText = (this.maleCreatures.length + this.femaleCreatures.length) + '';
     }
 
-    createFoodMatrix() {
-        const width = this.canvas.width / this.foodMatrixSize[0];
-        const height = this.canvas.height / this.foodMatrixSize[1];
-        for (let x = 0; x < this.foodMatrixSize[0]; x++) {
-            this.foodMatrixRects[x] = [];
-            this.foodMatrix[x] = [];
-            for (let y = 0; y < this.foodMatrixSize[1]; y++) {
-                this.foodMatrixRects[x][y] = {x: x * width, y: y * height, w: width, h: height};
-                this.foodMatrix[x][y] = [];
-            }
-        }
-    }
-
-    putFoodInTheFoodMatrix(food) {
-        for (let x = 0; x < this.foodMatrixSize[0]; x++) {
-            for (let y = 0; y < this.foodMatrixSize[1]; y++) {
-                let rect = this.foodMatrixRects[x][y];
-                if (food.x > rect.x && food.x < rect.x + rect.w &&
-                    food.y > rect.y && food.y < rect.y + rect.h) {
-                    this.foodMatrix[x][y].push(food);
-                    break;
-                }
-            }
-        }
-    }
-
-    getFoodSectionsCollideTo(rect1, spread = false) {
-        const foods = [];
-        for (let x = 0; x < this.foodMatrixSize[0]; x++) {
-            for (let y = 0; y < this.foodMatrixSize[1]; y++) {
-                let rect2 = this.foodMatrixRects[x][y];
-                if(this.collideTwoRects(rect1, rect2)) {
-                    if(spread)
-                        foods.push(...this.foodMatrix[x][y]);
-                    else
-                        foods.push(this.foodMatrix[x][y]);
-                }
-            }
-        }
-        return foods;
+    addFood(food) {
+        this.foodQuadtreeMap.insert({
+            x: food.x,
+            y: food.y,
+            food: food
+        });
     }
 
     getWorldFoodsCount() {
-        let count = 0;
-        for (let x = 0; x < this.foodMatrixSize[0]; x++) {
-            for (let y = 0; y < this.foodMatrixSize[1]; y++) {
-                count += this.foodMatrix[x][y].length;
-            }
-        }
-        return count;
+        return this.foodQuadtreeMap.getAllPoints().length;
     }
 
     collideTwoRects(rect1, rect2) {
